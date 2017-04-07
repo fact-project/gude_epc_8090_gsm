@@ -6,10 +6,19 @@ import time
 import logging
 from envelopes import Envelope
 
+import os
+
+os.path.realpath(__file__)
+
+def config():
+    config_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'credentials.json')
+    return json.load(open(config_path))
 
 @begin.subcommand
 def send(cmd=r"%config get all"):
-    j = json.load(open('credentials.json'))
+    j = config()
     c = Client(j['api_key'], j['api_secret'], j['account_sid'])
     m = c.messages.create(to=j['gudenumber'], from_=j['fromnumber'], body=cmd)
     start = time.time()
@@ -43,10 +52,11 @@ def mail(body):
 
 @begin.subcommand
 def receive():
-    j = json.load(open('credentials.json'))
+    j = config()
     c = Client(j['api_key'], j['api_secret'], j['account_sid'])
 
-    replies = [m for m in c.messages.list() if m.direction == 'inbound']
+    ms = c.messages.list()
+    replies = [m for m in ms if m.direction == 'inbound']
     for r in replies:
         mail(r.body)
         try:
@@ -54,10 +64,27 @@ def receive():
         except:
             logging.exception("could not delete message:")
 
+@begin.subcommand
+def delete():
+    j = config()
+    c = Client(j['api_key'], j['api_secret'], j['account_sid'])
+    ms = c.messages.list()
+    for m in ms:
+        m.delete()
+
+@begin.subcommand
+def print():
+    j = config()
+    c = Client(j['api_key'], j['api_secret'], j['account_sid'])
+    ms = c.messages.list()
+    for m in ms:
+        logging.info(vars(m))
+
 
 @begin.subcommand
 def both():
     send()
+    time.sleep(30)
     receive()
 
 
