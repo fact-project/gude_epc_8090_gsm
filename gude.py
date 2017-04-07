@@ -82,7 +82,7 @@ def print():
 
 
 @begin.subcommand
-def both():
+def send_and_receive():
     send()
     time.sleep(30)
     receive()
