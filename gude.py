@@ -6,6 +6,7 @@ import time
 import logging
 from envelopes import Envelope
 
+
 @begin.subcommand
 def send(cmd=r"%config get all"):
     j = json.load(open('credentials.json'))
@@ -39,6 +40,7 @@ def mail(body):
     except:
         logging.exception("Could not send email:")
 
+
 @begin.subcommand
 def receive():
     j = json.load(open('credentials.json'))
@@ -57,7 +59,6 @@ def receive():
 def both():
     send()
     receive()
-
 
 
 @begin.start
