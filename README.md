@@ -46,3 +46,27 @@ order to take part in this venture.
 So as with other repos, this might be split into two repos, one just containing the
 credentials.
 
+## Installation and Usage
+
+  To install this, clone it, install the requirements, enter the credentials, and call it e.g. using cron:
+  
+  * git clone https://github.com/fact-project/gude_epc_8090_gsm.git
+  * cd gude_epc_8090_gsm
+  * pip install -r requierements.txt
+  * cp credentials.json_template credentials.json
+  * vi credentials.json  # enter the twilio keys and phone numbers and so on
+  * crontab -e 
+
+At the moment this setup is checked out on `newdaq` and my (dneises) crontag line for this looks like this:
+
+    0 10 1 * * /home/dneise/gude_epc_8090_gsm/gude.py send_and_receive
+
+So it will be called every 1st of a month at 10am. It will send an email to the FACT mailing list with content like this:
+
+    Device name: FACT-computer 
+    Config Status:
+    COD=Off,TB=Off,ST=On,MAIL=Off,TEMP=Off,RESP=On,ERR=On,PN=On,FC=Off,MGSM=Off,ASYN=On,GSM=On,CTON=Off,CVOI=Off,ANUM=+41774528842,TMIN=0,TMAX=0
+    Contract SIM Card
+    Temperature: 26.4 C
+
+The contents are actually irrelevant, but we have to use a SIM card a bit, so this communication should be enough.
